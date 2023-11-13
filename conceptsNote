@@ -1,0 +1,1595 @@
+import { foregroundColorNames } from 'chalk'
+import { disable, magenta } from 'colors'
+import { query, response } from 'express'
+import { Db } from 'mongodb'
+import { json, useParams } from 'react-router-dom'
+import app from './app'
+import app from './app'
+import app from './app'
+import app from './app'
+import data from './data'
+import data from './data'
+import dbConnect from './mongoconn'
+import mongooseConn from './mongooseFile'
+
+Note:
+Interview questions:
+
+1. Console.log() statement here is different from console.log of browser because in browser cosole.log is provided by browser but
+in node js Console is a class and log is a method provided by console class
+console.warn()
+console.error()
+
+// 2.  ways to decalare variable arr and using for loops
+var x=20;
+const arr=[1,2,3,4,5,6,7,8];
+for(i=0;i<arr.length;i++)
+console.log(arr[i],+"" );
+
+3. difference between == and === 
+== compares only value of variable while comparision
+=== compares value and data type also 
+
+for example if var x='20';
+var y=20;
+
+x==20, // true
+x===20 // false
+
+// from one file 'app.js' if we export variables like this and want to import these variables into another file 
+export const x=20;
+export const y=20;
+
+//using import {x,y} from  './app'; this statement then it will give "SyntaxError: Cannot use import statement outside a module"
+//this error message becacuse
+
+// to use import export we have to use module.export={ x:10,y:20,z:function()} statement and export variable inside it.
+// and var app =  require('./app') this syntax to import and collect variables inside app
+//exaple of module.exports
+module.exports={
+    x:10,
+    y:20,
+    z:function(){
+        return 10;
+    }
+}
+
+var app =  require('./app');
+console.log(app.x);
+console.log(app.y);
+console.log(app.z());
+===================
+lecture 6: core modules
+------------------------
+Ques1. what is core modules?
+ans: predefined features or functions which are already present in language are called modules.
+
+Ques2. what are global modules?
+ans: those modules which can be used directly without importing anything regarding that, those are global modules 
+for examples-  console.log() console is a global module and we dont need to import (require) any function or files or package.
+
+Ques3. what are non global modules?
+ans: those modules which can only be used if we import required files first they are non-global modules.
+for example - fs.writeFileSync("filename1.txt","content of file");
+here fs can not be used directly because it doesn't have references, we need to import file system package then only we can use it.
+const fs  =  require('fs');
+
+Ques4. is it mandatory to use same variale(reference) name as name of imported module.
+ans: no 
+
+we can use const gs =  require('fs');
+gs.writeFileSync();
+
+ques5. do we need to import complete file system modules in one referemces
+ans: no, we can directly import only required module
+for example: const gs  = require('fs').writeFileSync;
+gs("filename2.txt","content with directly import of required module only");
+
+===========================
+Lecture 7: server creation
+
+// basic server creation
+// created with arrow function as an argument.
+const http = require('http');
+// http.createServer((req,res)=>{ // this is an example of passing function as a parameter
+//     res.write("<h1>Baic server is created listening port 4500</h1>");
+//     res.end();
+
+// }).listen(4500);
+// created with external function and passed it as an argument
+function responseData(req,res){
+    res.write("<h1>Welcome to server side scripting</h1>");
+    res.end();
+}
+
+http.createServer(responseData).listen(4500);
+
+---------------
+ques1: To create server and handle request and response for a server which module is used 
+ans : http module
+
+ques2: what is use of http module?
+ans: to handle server request and Response
+
+ques3: req, res explain?
+ans: req is used to handle and read request paramters passed or information passed from client side while sending request to server
+res is used to send response back to the server
+res .write is used to write reponse info need to be passed to server
+and res . end method is used to block the further addition of data into writeable module of res, it simply adds a final chunk of information 
+for exm re  . end("<p>Hello node js</p>");
+
+=============
+Lecture 8: package.json
+--------------------
+Ques1. What is package.json
+ans: it is a file which keeps information about our project and code, it keeps the following information 
+Projectname, author , git repository link for project , multiple commands , dependencies and details 
+if we are using some external module for our project and its information is updated in package.json file with version details
+so that if we give the project to customer they will have all dependencies information related to project,
+Note: We should never delete this file otherwise we will lose all information related to our project and Code 
+
+Ques2. How to create package.json?
+ans: run command npm i "any external module name" hit enter, it will be autometically create on first use of npm i 
+
+Ques3. what is package-lock.json ?
+ans: it is similar to package.json but contains some additional details for dependencies like version, source of version
+it can be deleted and it is generated whenever we run npm i command
+
+Ques4. nodeModules folder ?
+ans: is created when we call npm i dependencyName all dependecies related packages and subpackages are added here.and
+==================
+Lecture 9:node modules
+
+ques1: how to recover node_modules folder if deleted?
+ans: run npm install command it will be restore 
+
+ques2: how to push codes in git best practices?
+ans:  never push node modules its file size is too big which creates problem it can be simply installed using npm install command
+
+ques3: how to ignore files from git push?
+ans: create one . gitignore file and add path of node_moules or file which is need to be ignored
+================
+Lecture 10: nodemon package
+----------------
+nodemon package is used to check file output with recent changes without executing node filename command everytime
+it shows the updated result if user once run nodemon filename, no need to execute this command on every change just saving your
+file is enough
+
+ques 1: node js is async or sync ?
+ans: it is async in nature 
+it exeutes 1st statement
+2nd statement(complex data taking Time leave) and jump to 3rd statement 
+    -- comeback when data is received, it will not wait for completion of 2nd statement
+3rd statement
+4th statement
+it works on non-blocking nature, that's why it is superfast
+=======================
+Lecture 11: creating server and api with static data
+-------------------------------------------
+1. Make a Server 
+ans:
+var http = require('http');
+var data = require('./data');
+// const { json } = require('react-router-dom');
+
+http.createServer((req,res)=>{
+    res.writeHead(200,{'Content-type':'application\json'});
+    res.write(JSON.stringify(data));
+    res.end();
+}).listen(5200);
+
+2. create header and API body
+ans: res.writeHead(200,{'Content-type':'application\json'}); code to add Headers
+first parameter is response status code and second parameter is format of data we are sending
+json
+res.write(JSON.stringify(data));
+here convering json data into string format and passing to client side
+
+3. create an API with static data 
+ans: var data = [
+    {name:'Vivek Sharma', age:'25', email:'vs7483896@gmail.com'},
+    {name:'Ram sharma', age:'52', email:'vs7483896@gmail.com'}
+]
+module.exports = data; // exporting data from one file to another 
+
+4. Put data into static file 
+ans: created filename data.js and added following content 
+var data = [
+    {name:'Vivek Sharma', age:'25', email:'vs7483896@gmail.com'},
+    {name:'Ram sharma', age:'52', email:'vs7483896@gmail.com'}
+]  // static data 
+module.exports = data;
+
+5. interview question
+
+what is status code ?
+ans: status code are signal about what type of response we are receiving from our server setImmediate
+for example 
+200 - ok
+201 -  created if some we created some data on backend we can send the reponse ConvolverNode
+404 - file not found, if some file is not found 
+500 - internal server error
+
+these are common status codes
+=============================
+Lecture 12: Getting inputs from command line, creating file and deleting File
+----------------------------------------------------------------------------
+console.log(process.argv); - //process.argv keep command line inputs
+var processData = process.argv; // storing command inputs into one variable
+var fs = require('fs'); 
+if(processData[2] == 'add')
+{
+    fs.writeFileSync(processData[3],processData[4]);
+}
+else if(processData[2] == 'remove')
+{
+    fs.unlinkSync(processData[3]);
+}
+else
+{
+    console.log("invalid input");
+}
+
+
+[
+    'C:\\Program Files\\nodejs\\node.exe',
+    'C:\\Users\\Vs748_u\\OneDrive\\Desktop\\nodejs files\\reactjs\\nodeConcepts\\index.js',
+    'add', //process.argv[2] additional input
+    'appledata.txt', //process.argv[3] file name
+    'This is apple data'  // text
+ ]
+
+ Lecture 13: show file FileList
+ ===============================
+ 1. Make files in a folder
+ ans: var fs = require('fs');
+ var path = require('path'); // it gives current working path
+ 
+ var dirpath = path.join(__dirname,'files'); // it will join path with sepcific file
+ 
+ // console.log(dirpath);
+ // for(var i=0;i<5;i++){
+ //     fs.writeFileSync(dirpath+"/apple"+i+".txt","this is file content");  // writing into each files
+ // }
+ 
+ 2. use Path module
+ ans:
+ var path = require('path'); // it gives current working path
+ var dirpath = path.join(__dirname,'files'); // it will join path with sepcific file
+ 
+
+ 3. get file names and print
+ ans:
+ fs.readdir(dirpath,(err,files)=>{   // reading content of a folder
+    files.forEach((item)=>{
+        console.log(item);
+    });   
+});
+
+ 4. interview questions(can we create files in other drive of the system like d or e)?
+ ans: no, we can only create files inside the folder of the project outside this no files can be created because, 
+ for this project this project folder behaves as a server and outside of this folder there is no environment
+
+ ========================
+ Lecture 14:CRUD with File System
+----------------------------------
+1.create File
+ans: var fs = require('fs');
+
+var path = require('path');
+var dirPath = path.join(__dirname,'Crud');
+var filePath = `${dirPath}/crudfile.txt`;
+// creating new file with content
+// fs.writeFileSync(dirPath+"/crudfile.txt","Welcome to crud operations");
+// console.log(filePath);
+
+
+2. read File
+ans: // reading content from file
+// fs.readFile(filePath,'utf8',(err,item)=>{  // utf8 is character encoding if we don't use then it will display data in binary format
+//     if(!err)
+//     console.log(item)
+// })
+
+3. append File
+ans: 
+// fs.appendFile(filePath,"This is appended content",(err)=>{
+//     if(!err){
+//         console.log(" file is updated");
+//     }
+// });
+
+4. rename File
+ans: 
+fs.rename(filePath,`${dirPath}/apple.txt`,(err)=>{
+    if(!err){
+        console.log("file is renamed");
+    }
+})
+
+
+5. delete File
+ans:
+// fs.unlink(filePath,(err)=>{
+//     if(!err){
+//         console.log("file is deleted");
+//     }
+// })
+
+Interview question:
+what is buffer in node js
+ans: it is a temporary memory like ram in system, it is required to perform file operations to store temporary data
+
+Lecture 15: asynchronous programming
+====================================
+ques1: difference between asynchronous and synchronous programming
+ans: if we have 2 functions name user, product, cities so in synchronous programming first user function will be executed
+completely then execution of product will start and cities function will wait untill product finishes its execution
+then cities will execute
+here wait is applied and if user and product function takes 4 min each and cities takes 1 min for execution cities function have 
+to wait for 8 min before staring the execution
+
+comparitively
+
+In asynchronous
+user function will start execution and product and cities will also started parallely, no function will wait for any other function OfflineAudioCompletionEvent
+indirectly here wait does not apply that's why it is fast
+
+for practical example of asynchronous programming
+
+console.log("logic 1");
+
+setTimeout(()=>{
+    console.log("logic 2");
+},2000); // its execution will be started after 2 seconds and meanwhile logic 1 and logic 3 will be executed
+
+console.log("logic3");
+
+here output will be 
+
+logic 1
+logic 3 
+logic 2
+
+disadvantage of asynchronous:
+
+let a=10;
+let b=0;
+
+setTimeout(()=>{
+    b=20;
+},2000);
+
+console.log(a+b);
+
+here output
+
+10, because console statement will be executed before b=20 due to asynch nature so we will not get udpated data 
+this type of issues can be solved using promises
+
+// Lecture 16: asynchronous data handling
+// promises are used to handle aynch data updates
+let a=10;
+let b=0;
+let waitingData = new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+        resolve(30);
+    },2000);
+})
+
+waitingData.then((data)=>{
+b=data;
+console.log(a+b);  // this console will be executed when promise will return data
+});
+
+Lecture 17:  How Node js works
+Architecture of node js
+1. call stack 
+whenever any program execute in js, it creates an structure of statements need to be executed, so all statements first enters into call stack 
+here one main () method exist and all statement comes under main method and execution of statements starts 
+
+when one statement is executed then it autometically comes out of call stack block
+
+2. Node API
+ans: all inherited functions which are not part of js for example setTimeout  method is a c language function so it is inherited from c 
+all such functions or APIs which are inherited they are processed inside node API block from call stack block 
+
+
+3. CallBack queue 
+ans: from Node API block api calls are generated and shifted to callBack queue based on processing time of functions 
+here fuction keep on waiting untill call stack gets empty(when all statements are executed then default main is also exit from the call statck block)
+ once call stack is found empty api start getting executed and shifted from call back queue to call stack 
+
+
+
+
+Event Loop(call stack , node API , CallBack queue)
+ans: this complete architecture is process is known as event loop
+4. Example
+const a=10;
+const b=20;
+console.log(a+b);
+
+output
+30
+
+here also statements move to call Stack get executed
+
+
+5. Interview questions
+console.log("starting up"); // 
+setTimeout(()=>{
+    console.log("second log");
+},2000);
+
+setTimeout(()=>{
+    console.log("third log");
+});
+
+console.log("ending up");
+
+output:
+
+starting up 
+ending up 
+third log 
+second log
+===================
+architecutre execution will be as follow 
+1. call stack 
+staring up console  executed 
+setTimeout second log 
+setTimeout third log 
+ending up console executed
+ 
+2. Node API block 
+setTimeout second log 
+SetTimeout third log 
+
+3. call back queue 
+setTimeout with 0 sec 
+setTimeout with 2 sec 
+
+4. call stack 
+execute setTimeout with 0 sec 
+execute setTimeout with 2 sec 
+====================================
+Lecture18: Express js
+------------------------
+What is express?
+ans: express is a framework of js which is used to create api
+
+Install Express?
+ans: npm install express
+
+Make example with express js
+ans:
+
+var express = require('express');
+var app = express ();
+
+app.get (' ',(req , res)=>{ // it will run on every request
+    console.log("query parmaters->>>",req.query.name);   //by this way, we can use query paramters passed by browsers
+    // for example localhost:5300?name=vivek so here ?name= is query parameter and vivek is value of query name 
+    res . send('welcome to cpi methods');
+});
+
+app.get ('/about',(req , res)=>{ // it will run on /about api request
+    res . send('welcome to about page');
+
+});
+
+app. get('/home',(req , res)=>{   // it will run on /home api request
+    res . send('welcome to home page');
+}); 
+
+app. listen(5000); // it will listen port 5000
+
+
+
+Interview questions:
+================================
+Lecture 20: Html and json format response
+
+app.get("/help",(req,res)=>{
+    res .send ({
+        'name':'vivek',
+        'email':'vs7483896@test.com'
+    });
+});
+========================================
+Lecture 21: access/load static html pages
+1. create html pages in public folder
+2. load path module and join with public folder name 
+3. var path = require('path');
+4. var htmlpath = path.join(__dirname,'public');
+5. app.use(express .Static(htmlpath));
+6. go to browser and load html file using localhost:5000/home .html like this
+
+interview question 
+what is use of path module
+ans:  used to work with directory
+
+2.  what is use of static method in express ?
+ans: To load static html pages
+=================================================
+Lecture 22: Remove extension from URL 
+Apply Get method 
+ans:
+app.get('',(req , res)=>{
+    req .sendFile(`${htmlpath}/about.html`); 
+})
+Remove an extension from URL for example about .html 
+ans: res .sendFile(`${htmlpath}/about.html`);
+Make 404 page
+ans: create simple filenotfound.html in public folder
+
+Apply 404 page
+ans : app.get('*',(req , res)=>{   // * means for any invalid url which we have not handled will come to this api and load invalid file message
+    res . sendFile(`${htmlpath}/filenotfound.html`);
+} )
+Interview questions 
+what is use of 404 page 
+ans : used to show a message when user send request with invalid link 
+
+why extensions are removed from the url 
+ans : security purpose we don't want user to get info about how our application is built and information is loaded from which file  
+===========================================
+Lecture 23: Template Engine
+-----------------------------
+What is template engine?
+ans: it is a node package which is used to create dynamic html page
+
+Install ejs template package ?
+ans: npm install ejs
+
+Setup dynamic routing ?
+ans: app.get('/profile',(req,res)=>{
+    const user={
+        name:'vivek',
+        email:'vs7483896@test.com'
+    };
+    res.render('profile',{user});
+});
+
+
+Make dyanamic page ?
+ans: 
+- create a folder views inside the project root folder and add one file profile.ejs , profile is a name of the file it can be different.
+- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <title>Profile</title>
+</head>
+<body>
+    <h1>Welcome <%=user.name%></h1>  // this is syntax to access values passed by data from index.js when request came
+    <h2>profile id <%=user.email%></h2> 
+</body>
+</html>
+
+Interview question ?
+ans: 
+
+
+skip dyamic pages with loop lecture 24 as ejs is not workin in my visual studio
+
+==========================================================
+
+Lecture 25: Express Middleware
+--------------------------------
+ques:What are middleware?
+ans: Middleware are function which execute just before execution of all routes or specific routes.
+
+ques: How to make middleware?
+ans:  
+const reqFilter = (req,res,next)=>{   //this normal function with 3 parameters...
+    if(!req.query.age){
+        res.send("<h1>Invalid age! please enter your age</h1>");
+    }
+
+    else if(req.query.age>=18){
+        next();  // it function will execute the next function in the call stack queue
+    }
+
+    else{
+        res.send("<h1>Your age is less than 18</h1>");
+    }
+}
+
+
+ques: Apply middleware on routes ?
+ans: app.use(reqFilter);  // so we have applied this middleware so it will be execute just before any router api executes
+
+Ques: Types of middleware ?
+ans: 
+1. Application level middleware
+example: which is applicable on complete application 
+app.use(reqFilter);
+
+2. Router-level middleware
+ 
+3. Error handling middleware
+4. Built-in middleware
+5. Third - party middleware
+
+Interview Questions
+================================
+Lecture 26: Route level middleware express js
+
+Single route level
+app.get('/users',reqFilter,(req,res)=>{
+    res.send("<h1>Welcome to users page<h1>");
+});
+
+app.get('/contactus',reqFilter,(req,res)=>{
+    res.send("<h1>Welcome to contact us page<h1>");
+});
+
+Specific routes level
+app.get('/users',reqFilter,(req,res)=>{
+    res.send("<h1>Welcome to users page<h1>");
+});
+
+Group of routes 
+ans :
+const route = express .Router();
+route .use(reqFilter); // reqFilter is name of middleware 
+app .use('/',route); 
+
+route .get ('/home',(req,res)=>{
+res . send ("<h1>Welcome to home page with route middleware</h1>")
+});
+
+route .get ('/about',(req,res)=>{
+    res . send ("<h1>Welcome to about page with route middleware</h1>")
+    });
+
+Note: we simply use route .get method on all api we want to get exectued with one middleware 
+
+
+Define and access middleware from separate file 
+ans: 
+create one js file with anyname .js on root level of project folder 
+
+define middleware function like this 
+module.exports=reqFilter = (req,res,next)=>{   //this normal function with 3 parameters...
+    if(!req.query.age){
+        res.send("<h1>Invalid age! please enter your age</h1>");
+    }
+
+    else if(req.query.age>=18){
+        next();  // it function will execute the next function in the call stack queue
+    }
+
+    else{
+        res.send("<h1>Your age is less than 18</h1>");
+    }
+}
+
+
+load the middleware file in the file where we are to use middleware
+const reqFilter = require('./middleware');
+
+==================================================
+Lecture 27: Mongo db installation 
+what is mongo db?
+ans: mongo db is a non-sql database, it is used to store large amount of data
+
+name gui of mongo db?
+ans: mongodb Compass Tool
+==================================================
+
+Lecture 28:  Mongo db basics
+
+what is mongodb?
+ans: mongodb is nonsql database
+the data is stored in collection 
+collections doesn't have row and columns
+data is stored in form of objects 
+
+
+mongodb vs mysql
+
+ans: mongodb has no structure but mysql has structure and data is store in the form of row an coulmns 
+mongodb is useful when we don't have clear information about no of rows and columns should be in a table of database 
+in mysql if there are columns like alternate phone no and alternate address which are optional then there is high 
+chances that these columns will be empty in table which waste memory but this does not happen in case of mongo db 
+here we have flexiblity to increase or decrease data 
+
+
+
+mongodb basic commands
+
+interview questions 
+
+
+
+
+
+---------------------------
+1. To create new db 
+command : use <dbname> for exam use youtube
+
+2. To show db 
+show dbs 
+
+3. To create new collection 
+db.createCollection('collectionname')
+
+4. To insert document 
+db . collectionName . inserone({key:'value'})
+
+========================================
+Lecture 29: CRUD operations in mongodb
+----------------------------------------
+insert document(row) into mongodb
+use dbname
+db .collectionName . insertone({key:'value'});
+
+show all documents present in one collection 
+db .collectionname .find () 
+
+update a document(row)  in mongodb 
+db . collectionName .updateone ({uniquekey:"value"},{$set:{key tobe updated:"value"}})
+
+delete a document(row) in mongo db 
+db .  collectionName .deleteone ({key:"value"});
+
+
+examples:
+==========================
+
+use codestepbystep
+'switched to db codestepbystep'
+show dbs
+admin            40.00 KiB
+codestepbystep   72.00 KiB
+config           72.00 KiB
+inotebook       180.00 KiB
+local            72.00 KiB
+test            108.00 KiB
+db.nodtut.find
+[Function: find] AsyncFunction {
+  returnsPromise: true,
+  apiVersions: [ 1, Infinity ],
+  returnType: 'Cursor',
+  serverVersions: [ '0.0.0', '999.999.999' ],
+  topologies: [ 'ReplSet', 'Sharded', 'LoadBalanced', 'Standalone' ],
+  deprecated: false,
+  platforms: [ 'Compass', 'Browser', 'CLI' ],
+  isDirectShellCommand: false,
+  acceptsRawInput: false,
+  shellCommandCompleter: undefined,
+  help: [Function (anonymous)] Help
+}
+db.nodtut.find()
+{ _id: ObjectId("64033d7f47c9a9549e6d6467"),
+  title: 'node tutorial',
+  author: 'vivek sharma' }
+{ _id: ObjectId("640480ea47c9a9549e6d6468"), product: 'apple' }
+db.nodtut.updateOne({product:"apple"},{$set:{item:"iphone",price:"100000"}})
+{ acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0 }
+db.nodtut.insertOne({product:"apple",item:"ipod",price:"10000" })
+{ acknowledged: true,
+  insertedId: ObjectId("6404836147c9a9549e6d6469") }
+db.nodtut.find()
+{ _id: ObjectId("64033d7f47c9a9549e6d6467"),
+  title: 'node tutorial',
+  author: 'vivek sharma' }
+{ _id: ObjectId("640480ea47c9a9549e6d6468"),
+  product: 'apple',
+  item: 'iphone',
+  price: '100000' }
+{ _id: ObjectId("6404836147c9a9549e6d6469"),
+  product: 'apple',
+  item: 'ipod',
+  price: '10000' }
+db.nodtut.deleteOne({product:"apple"})
+{ acknowledged: true, deletedCount: 1 }
+db.nodtut.insertOne({product:"apple",item:"iphone",price:"40000"})
+{ acknowledged: true,
+  insertedId: ObjectId("6404843347c9a9549e6d646a") }
+db.nodtut.find()
+{ _id: ObjectId("64033d7f47c9a9549e6d6467"),
+  title: 'node tutorial',
+  author: 'vivek sharma' }
+{ _id: ObjectId("6404836147c9a9549e6d6469"),
+  product: 'apple',
+  item: 'ipod',
+  price: '10000' }
+{ _id: ObjectId("6404843347c9a9549e6d646a"),
+  product: 'apple',
+  item: 'iphone',
+  price: '40000' }
+db.nodtut.deleteMany(product:"apple")
+Error: clone(t={}){const r=t.loc||{};return e({loc:new Position("line"in r?r.line:this.loc.line,"column"in r?r.column:...<omitted>...)} could not be cloned.
+db.nodtut.deleteMany({product:"apple"})
+{ acknowledged: true, deletedCount: 2 }
+codestepbystep
+
+=================================
+Lecture 30: connect mongodb with node js
+-------------------------------------------
+install mongodb first using npm i mongodb
+
+const {MongoClient} = require('mongodb');
+const url = "mongodb://localhost:27017";
+const db = "codestepbystep";
+
+const client = new MongoClient(url); // connecting to mongodb
+
+async function getData(){
+   const result = await client.connect(); // connecting to mongo
+   const database = result.db(db);  // connecting to one database  
+   const collection = database.collection('nodtut'); // connecting to collection
+//    let insertdata = await collection.insertOne({Product:"Apple",Item:"iphone14 max pro", Rate:"50000"});
+//    let response = await collection.find({}).toArray();
+//    console.log(response);
+//    let updateData =await collection.updateOne({Product:"Apple"},{$set:{Item:"iPod",Rate:"10000"}});
+   let response = await collection.find({}).toArray();   // display data
+   console.log(response);
+   let deleteData = await collection.deleteOne({Item:"iphone14 max pro"});
+   response = await collection.find({}).toArray();
+   console.log(response);
+}
+
+getData();
+
+========================================
+lecture 31: create connection with mongodb and read data
+
+const dbConnect=async()=>{
+    const {MongoClient} = require('mongodb');
+    url = "mongodb://localhost:27017";
+    db ="codestepbystep";
+    const dbconnection = new MongoClient(url);
+    const database = await dbconnection.connect();
+    const usedb = database.db(db);
+    const collection = usedb.collection('nodtut');
+    //const result = await collection.find({}).toArray(); // this is handling promises using async await 
+    //console.log(result);
+    //  const result = collection.find().toArray().then((data)=>{ // this is handing promises using .then method
+    //     return data;
+    // });    // . toArray method return promises
+    // result.then((data)=>{  // inside result now we have promises to collect informatin
+    //     console.log(data);
+    // })
+
+}
+module.exports = dbConnect;
+//dbConnect();
+
+interview question:
+1. how to add where condition to find data
+ans use find function and add key value in braces
+find ({key:"value"});
+for example find ({Rate:"10000"}) it will show all products with rate 10000
+===================================
+Lecture 32: Insert data into mongo db 
+
+1. Make a new file for insert data 
+ans create one insert .js file
+2. Import mongodb connection
+ans const dbconn = require(./mongoconn);  
+3. Insert single and multiple records 
+const collection = await dbConnect();
+const ins_document = await collection.insertOne({Product:'micromax',Item:'Mobile',Rate:'10000'}); // inserted single record
+const ins_document = await collection.insertMany(    // inserted multiple record
+    [
+    {Product:'micromax',Item:'Smart Mobile',Rate:'11000'},
+    {Product:'micromax',Item:'Ipad',Rate:'15000'},
+    {Product:'micromax',Item:'Laptop',Rate:'25000'}
+]
+);
+4. Interview questions
+-
+================================
+Lecture 33: Update data in Mongo DB 
+1. Make new file for update data 
+
+2. Import Mongo Db connection 
+ans: const dbConnect = require('./mongoconn');
+
+3. Update single and multiple records 
+ans: const dbConnect = require('./mongoconn');
+
+const updateData =async()=>{
+
+    const db = await dbConnect();
+    //const Update_doc = await db.updateOne({Product:'micromax'},{$set:{Product:'Vivo'}}); updating single document with where condition 
+    // Change product name to vivo where product name is micromax
+    //const Update_doc = await db.updateMany({Product:'micromax',Item:'Mobile'},{$set:{Product:'Vivo',Rate:'20000'}});
+    // change all product name to vivo and rate to 20000 where product is micromax and item is mobile
+    const Update_doc = await db.updateOne({Product:'Vivo',Item:'Mobile'},{$set:{Rate:'20000'}});
+    if(Update_doc.acknowledged){
+        console.log("Record updated successfully!");
+    }
+    else{
+        console.log("Record update failed!");
+    }
+}
+updateData();
+4. Interview questions 
+ans: how to update single entry if we have more than one enty with same name
+
+db.updateOne({Product:'Vivo',Item:'Mobile'},{$set:{Rate:'20000'}}); this statement give us resonse like this 
+{
+    acknowledged: true,  // it means all entries are updated
+    modifiedCount: 0,
+    upsertedId: null,
+    upsertedCount: 0,
+    matchedCount: 4  // it means 4 entry matched
+  }
+
+Ques: How to check if no data is udpated?
+ans: check matchedCount:0 value irrespective of acknowledged:true 
+
+  {
+    acknowledged: true,
+    modifiedCount: 0,
+    upsertedId: null,
+    upsertedCount: 0,
+    matchedCount: 0
+  }
+
+Lecture 34: Delete Record in mongodb 
+====================================
+1. Make a new file to delete record 
+2.  Import mongodb connection. 
+3. Delete single or multiple records 
+ans :
+const dbConnect = require('./mongoconn');
+
+const deleteData =async()=>{
+
+    const db = await dbConnect();
+    //const delete_doc = await db.deleteOne({Product:'Apple'}); // delete single record with one condition where Product is apple
+    const delete_doc = await db.deleteMany({Product:'Vivo'}); // delete many record with condition where Product is vivo
+    console.log(delete_doc);
+}
+
+deleteData();
+
+4. Interview questions  
+Ques: How to check if document is not deleted?
+ans: deletedCount value will be 0 irrespective of acknowledge:true
+
+
+{ acknowledged: true, deletedCount: 1 } - deleteCount give info how many documents deleted
+{ acknowledged: true, deletedCount: 4 } - here 4 entries deleted
+{ acknowledged: true, deletedCount: 1 } 
+Note: when we delete a document with condition and no entries match or document is not deleted then 
+{ acknowledged: true, deletedCount: 0 } deletedCount value will be 0 which indicates document is not deleted
+=============================================================
+Lecture 35: Basic Get api with MongoDb  
+Make new file for api 
+
+import and use mongo config
+ans: 
+const express = require('express');
+const dbConnect = require('./mongoconn');
+
+Make api for get data 
+ans: 
+const express = require('express');
+const dbConnect = require('./mongoconn');
+const apiFunc =async()=>{
+    const app = express(); // calling express function to use app get api methods
+    const db = await dbConnect(); // creating connection
+    const result = await db.find({}).toArray(); // collecting data 
+    app.get('/',(req,resp)=>{   // get api call 
+        //resp.send({name:"vivek"});
+        resp.send(result); // sending response back to cllent
+    });
+    app.listen(5000);
+}
+apiFunc();
+
+Test with Postman
+
+Interview questions
+ques :
+Q1: Can we add body details with GET request ?
+Ans: No, some apps provide function but it is possible in fact
+===========================================
+Lecture 36:Post api insert data in mongo db
+------------------------------------------
+1. Make Post method for API 
+Ans: 
+app.post('/',async(req,resp)=>{
+    resp.send(req.body);    
+});
+2. send data from Postman 
+Ans:
+{
+    "Product":"Nokia",
+    "Item":"Headphones-N90",
+    "Rate":"3000"
+}
+3. Get data in node js by request 
+Ans:
+app.post('/',async(req,resp)=>{
+    console.log(req.body);  
+});
+
+4. write code for insert data in mongo Db
+ 
+Ans:
+app.use(express .json()); // it is used to collection data from req parameter in json format or readable format
+app.post('/',async(req,resp)=>{
+    const db = await dbConnect();
+    const insert_doc = await db.insertOne(req.body);
+    //console.log(req.body);
+    const result = await db.find({}).toArray();
+    if(insert_doc.acknowledged){
+        resp.send("Document added successfully!");
+    }
+    else{
+        resp.send("Insertion request failded!");
+    }
+    
+});
+app.listen(5000);
+
+5. Interview questions
+============================
+Lecture 37: PUT mehtod in mongodb
+--------------------------------
+1. Make PUT method for API. 
+app.put('/',async(req,resp)=>{
+    const db = await dbConnect();
+    //const updated_info = db.updateOne({Product:"Nokia"},{$set:{Rate:"400"}});
+        const updated_info = db.updateOne({Product:req.body.Product},{$set:req.body});
+    if((await updated_info).matchedCount>0)
+    resp.send("Document updated successfully!");
+    else{
+        resp.send("Updation failed");
+    }
+});
+app.listen(5000); 
+2. Send data from Post Man.
+
+3. Handle data in node js by request.
+const db = await dbConnect();
+//const updated_info = db.updateOne({Product:"Nokia"},{$set:{Rate:"400"}});
+    const updated_info = db.updateOne({Product:req.body.Product},{$set:req.body});
+4. write code for update in mongodb.  
+const updated_info = db.updateOne({Product:req.body.Product},{$set:req.body});
+5. Interview questions. 
+Ques: can we use POST api to update data?
+ans: Yes, we can use but PUT method is an standard or recommended way to update data so we use PUT api. 
+
+Ques: update data by taking 
+const updated_info = db.updateOne({Product:req.body.Product},{$set:req.body}); // here we are finding document with product name and updating 
+all entries so in this case syntax is this and req .body return a object so no need to write {} 
+
+Ques: Take input from query parameter and udpate data using PUT api 
+ans: 
+Postman request url: localhost:5000/Nokia
+
+app.put('/:Product',async(req,resp)=>{
+    const db = await dbConnect();
+    const updated_info = db.updateOne({Product:req.params.Product},{$set:req.body}); // req .params . Product name must be same as /:Product 
+        if((await updated_info).matchedCount>0)
+    resp.send("Document updated successfully!");
+    else{
+        resp.send("Updation failed");
+    }
+});
+
+Ques: sending request with query parameter in node and udpate data using PUT api
+Postman request url: localhost:5000?Product=Nokia
+app.put('/',async(req,resp)=>{
+    const db = await dbConnect();
+    //const updated_info = db.updateOne({Product:"Nokia"},{$set:{Rate:"400"}});
+        //const updated_info = db.updateOne({Product:req.body.Product},{$set:req.body});
+    //const updated_info = db.updateOne({Product:req.params.Product},{$set:req.body});
+    const updated_info = db.updateOne({Product:req.query.Product},{$set:req.body});
+        if((await updated_info).matchedCount>0)
+    resp.send("Document updated successfully!");
+    else{
+        resp.send("Updation failed");
+    }
+});
+app.listen(5000);
+=========================================
+Lecture 38:DeleteAPI|delete data from mongo db
+
+1. Make delete method for API 
+Ans: 
+app.delete('/:id',async(req,resp)=>{
+    const db = await dbConnect();
+    const deleted_info = await db.deleteOne({_id:new mongodb.ObjectId(req.params.id)});
+    if(deleted_info.deletedCount>0){
+        resp.send("Document deleted successfully!");
+    }
+    else{
+        resp.send("Delete failed");
+    }
+});
+2. Send data from Postman 
+Ans: 
+localhost:5000/6416bfd814c85da58fd70fb1
+3. Handle data in node js by request 
+Ans: app.delete('/:id',async(req,resp)=>{
+
+4. write code for delete data in mongodb
+Ans: 
+app.delete('/:id',async(req,resp)=>{
+    const db = await dbConnect();
+    const deleted_info = await db.deleteOne({_id:new mongodb.ObjectId(req.params.id)});
+    if(deleted_info.deletedCount>0){
+        resp.send("Document deleted successfully!");
+    }
+    else{
+        resp.send("Delete failed");
+    }
+});
+5. Interview questions
+ques: how to delete data using document id?
+ans: const deleted_info = await db.deleteOne({_id:new mongodb.ObjectId(req.params.id)});
+document id is an object so to pass it in condition we need to pass it as an object 
+so we used new mongodb . ObjectId(req .params .id);
+====================================================
+Lecture 39: Mongoose with node
+------------------------------
+1. what is mongoose? 
+ans: mongoose is a package which helps to connect node js with mongo db and provides additional feature like creating validation
+, defining document types for example name should be in string only.
+add restrictions to no of fields should be entered into the document .
+
+
+2. Difference between mongodb and mongoose .
+Ans: 
+1. in mongodb we can't add validation for document types but in mongoose we can add. 
+2.  Restrictions on no of fields data that should be entered  can be added in mongoose but not in mongodb 
+
+3. How to install mongoose ?
+Ans: npm i mongoose. 
+ 
+4. what is schema ?
+Ans: Schema is defintion of document fields(entries) type 
+for example name: String, Price: Number   
+5. what is model ?
+Ans: it connects nodes js to mongodb with defined schema that should be applied on specific db collection .   
+
+6. connect node js and MongoDB with mongoose .
+
+Ans: 
+const mongoose = require('mongoose');
+const mongooseConn = async()=>{
+    await mongoose.connect("mongodb://localhost:27017/codestepbystep"); // connecting to mongodb database 
+
+    const ProductSchema = mongoose.Schema({  // defining schema so apart from these 3 fields no other entries can be added in collection
+        Product:String,
+        Item:String,
+        Rate:String
+    });
+    const  ProductModel = mongoose.model('nodtut',ProductSchema);  // creating model and connecting node js with mongodb with schema
+    //const data = new ProductModel({Product:"BPL",Item:"Television",Rate:"25000"}); // inserting data into mongodb 
+    const data = new ProductModel({Product:"BPL",Item:"Radio",Rate:"5000",Manufactured:"India"}); //inserting fields more than defined in schema
+    // so only those fields will be saved which are defined in schema and rest Manufactred will be ignored. and no error will come
+    // document will be created successfully in database.  
+    const result = await data.save();  // it will save data into database and returen document created object
+    console.log(result);
+}
+mongooseConn();
+==============================
+Lecture 40: CRUD with Mongoose
+------------------------------
+1. Update Record. 
+Ans: 
+//mongooseFile
+const mongooseConn = async()=>{
+    const mongoose = require('mongoose');
+
+    await mongoose.connect("mongodb://localhost:27017/codestepbystep");
+
+    const ProductSchema = new mongoose.Schema({
+        Product:String,
+        Item:String,
+        Rate:String
+    });
+    const  ProductModel = mongoose.model('nodtut',ProductSchema);
+    return ProductModel;
+    //let data = new ProductModel({Product:"MI",Item:"Television",Rate:"25555"});
+    //let data = new ProductModel({Product:"BPL",Item:"Radio",Rate:"5000",Manufactured:"India"});
+    //let result = await data.save();
+    //console.log(result);
+}
+module.exports = mongooseConn;
+
+const mongooseConn = require('./mongooseFile');
+
+const update_Data = async()=>{
+    const ProductModel = await mongooseConn();
+    let data = await ProductModel.updateOne({Product:"BPL"},{$set:{Rate:"40000"}});
+    console.log(data);
+}
+//update_Data();
+
+
+2. Delete Record.
+ans: 
+const delete_Data = async()=>{
+    const ProductModel = await mongooseConn();
+    //let data = await ProductModel.deleteOne({Product:"BPL"});
+        let data = await ProductModel.deleteMany({Product:"BPL"});
+    console.log(data);
+}
+//delete_Data();
+
+
+3. Find and Read Result. 
+ans: 
+const show_Data = async()=>{
+    const ProductModel = await mongooseConn();
+    let data = await ProductModel.find();
+    console.log(data);
+}
+//show_Data();
+
+4. Insert data 
+ans: 
+const insert_data = async()=>{
+    const ProductModel = await mongooseConn();
+    let data = new ProductModel({Product:"Hero",Item:"Bike",Rate:"95000"});
+    let result = await data.save();
+    console.log(result);
+}
+
+insert_data();
+======================
+Lecture 41: POST api with mongoose 
+1. create config file for mongoose connection 
+ans: 
+const mongoose = require('mongoose');
+mongoose.connect("mongodb://localhost:27017/codestepbystep");
+
+2. create schema for product 
+ans: 
+const mongoose = require('mongoose');
+const products = mongoose.Schema({
+Product:String,
+Item:String,
+Rate:String
+});
+module.exports = mongoose.model('nodtut',products);
+
+3. create index file for API connection 
+ans: 
+const express = require('express');
+require('./config');
+const products = require('./product');
+const app = express();
+app.use(express.json());
+app.post('/create',async(req,resp)=>{
+    let data = new products(req.body);
+    let result = await data.save();
+    resp.send(result);
+});
+
+app.listen(6000);
+
+==========================================
+Lecture 42: put delete and get api with mongoose 
+1. Example of GET api 
+const express = require('express');
+require('./config');
+const products = require('./product');
+const app = express();
+app.use(express.json());
+app.get('/fetch',async(req,resp)=>{
+let results = await products.find();
+console.log(results);
+resp.send(results);
+});
+
+app.listen(6000);
+
+2. Example of PUT api 
+ans:
+app.put('/update/:_id',async(req,resp)=>{
+    let updated = await products.updateOne(req.params,{$set:req.body});
+    resp.send(updated);
+});
+
+3. Example of DELETE API 
+ans:
+app.delete('/delete/:_id',async(req,resp)=>{
+    console.log(req.params);
+    let delresp = await products.deleteOne(req.params);
+    resp.send(delresp);
+});
+
+Lecture 43: search api with mongoose 
+1.  create search api with single field
+ans: 
+app.get('/search/:key',async(req,resp)=>{
+    let result = await products.find({
+        "$or":[
+            {"Product":{$regex:req.params.key}}  // creating search for pattern means search data where Bike is present in product
+        ]
+    });
+    resp.send(result);
+});
+//localhost:6000/search/Bike // pattern we are searching in product and item field if Bike pattern is present in any one columns then we 
+// get data 
+
+2. create search api with multiple field
+app.get('/search/:key',async(req,resp)=>{
+    let result = await products.find({
+        "$or":[
+            {"Product":{$regex:req.params.key}},  // creating search for pattern means search data where Bike is present either in product or Item
+            {"Item":{$regex:req.params.key}}
+        ]
+    });
+    resp.send(result);
+});
+//localhost:6000/search/Bike // pattern we are searching in product and item field if Bike pattern is present in any one columns then we 
+// get data 
+
+Lecture44: Upload file 
+=======================
+// code is not workin for me, multer is a library which allow to interact with disk storage and select file and upload when requested from form
+const multer = require('multer');
+const express = require('express');
+const app = express();
+
+const uploads = multer({
+    storage: multer.diskStorage({
+        destionation: function(req, file, cb){
+            cb(null,"upld");
+        },
+        filename: function(req, file, cb){
+            cb(null,file.fieldname+"_"+Date.now() + ".jpg");
+        }
+    })
+}).single("user_file");
+
+app.post('/upload',uploads,(req,resp)=>{
+    resp.send("file uploaded");
+});
+app.listen(7000);
+
+=========================================
+Lecture #45 OS module
+Note: we use os module when we have add condition in application based on os/sytem information like 32 bit or 64 bit, default working directory
+const os = require('os');
+console.log(os.arch()); // it gives architecture information 
+console.log(os.freemem()/(1024*1024*1024)); // free ram space info
+console.log(os.totalmem()/(1024*1024*1024)); // total ram memory
+console.log(os.userInfo()); // userdetails 
+//username: 'Vs748_u',
+//homedir: 'C:\\Users\\Vs748_u',
+
+console.log(os.hostname());
+//DESKTOP-SEUBTOM
+console.log(os.platform());
+// win32
+=================
+Lecture 46: event and eventEmitter 
+1. what is event and eventEmitter. 
+ans: 
+whenever an click or other action occur on client side by user that is know as event for example click, keypress keydown, whenever these events 
+occur these events are triggered by one EventEmitter then if user set callback functions then those scripts are executed . 
+but in server side these event doesn't exist but can be generated by APIs 
+
+use of these event on server side 
+example suppose user want to calculate api call counts 
+so we can use EventEmitter class  and function event.emit which will emit event 
+and these emits are handled by event.on 
+
+
+2. Make an event and call it. 
+const express = require('express');
+const EventEmitter = require('events'); // EventEmitter is a class used express is npm package reference
+
+const event = new EventEmitter(); // new EventEmitter object reference is created
+
+const app = express();
+let count =0;
+event.on("countAPI",()=>{  // when countAPI event is emitted then this callback arrow function will be called
+count++;
+console.log("event call: ",count);
+})
+
+app.get('/search',(req,resp)=>{
+    resp.send("search API called");
+    event.emit("countAPI"); // this will emit count API event
+});
+
+app.get('/update',(req,resp)=>{
+    resp.send("update API called");
+    event.emit("countAPI");
+});
+
+app.get('/delete',(req,resp)=>{
+
+    resp.send("delete API called");
+    event.emit("countAPI");
+});
+
+app.listen(7000);
+
+3. Interview question
+
+
+=================================
+Lecture 47:REPL  Read Eval Print Loop 
+when we run node in CLI editor there we use REPL 
+line by line code is evaluted adn printed 
+
+======================================
+Leture 48: connect mysql with node js
+======================================
+1. create connection with mysql. 
+ans: 
+const mysql = require('mysql');
+
+const con1 = mysql.createConnection({
+host:"localhost",
+user:"root",
+password:"",
+database:"practice"
+}
+);
+
+2. create fetch data from mysql. 
+ans: 
+const mysql = require('mysql');
+const con1 = mysql.createConnection({
+host:"localhost",
+user:"root",
+password:"",
+database:"practice"
+}
+);
+
+// con.connect((error)=>{
+// if(error){
+//     console.log("error");
+// }
+// else{
+//     console.log("connection established");
+// }
+
+// });
+
+con1.query("select * from nodep",(error,result)=>{
+
+    if(error){
+        console.log("faild to fetch data");
+    }
+    else{
+        console.log(result);
+    }
+});
+=========================
+Lecture 49: Get API with MYSQL
+1. make config file. 
+Ans: 
+const mysql = require('mysql');
+const conn = mysql.createConnection({
+    host:"localhost",
+    user:"root",
+    password:"",
+    database:"practice"
+});
+module.exports = conn;
+
+2. make route for API. 
+Ans: 
+const express = require('express');
+const mysqlconn = require('./mysqlconfig');
+const app = express();
+
+app.get('/',(req,resp)=>{
+    mysqlconn.query("select * from nodep",(err,result)=>{
+        if(err){
+            resp.send("Error connection failed");
+        }
+        else{
+            resp.send(result);
+        }
+    });    
+});
+app.listen(5000);
+
+
+3. Get data from MYSQL.
+Ans: 
+app.get('/',(req,resp)=>{
+    mysqlconn.query("select * from nodep",(err,result)=>{
+        if(err){
+            resp.send("Error connection failed");
+        }
+        else{
+            resp.send(result);
+        }
+    });    
+});
+
+
+4. Interview questions.
+quest: can we connect more than one database in node js
+Ans: 
+
+============================
+Lecture 50:  POST api with mysql
+1. Make Route for API 
+ans: 
+app.post('/',(req,resp)=>{
+    //mysqlconn.query("insert into nodep values('Country Delight','Milk','50')",(error,result)=>{});
+    //let data ={Product:"compton",Item:"fan",Rate:"5000"};
+    let data = req.body;
+    mysqlconn.query("Insert into nodep Set?",data,(error,result,fields)=>{
+        if(error){
+            resp.send("insertion failed");
+        }
+        else{
+            resp.send(result);
+        }     
+    });
+});
+app.listen(5000);
+
+2. insert Data in MYSQL
+ans:
+//mysqlconn.query("insert into nodep values('Country Delight','Milk','50')",(error,result)=>{}); 
+    //let data ={Product:"compton",Item:"fan",Rate:"5000"};
+    let data = req.body; // fetching from client
+    mysqlconn.query("Insert into nodep Set?",data,(error,result,fields)=>{ // this is standard method to insert data 
+        if(error){
+            resp.send("insertion failed");
+        }
+        else{
+            resp.send(result);
+        }     
+    });
+
+3. interview questions
+Ques: can two differnt api methods have same route ?
+ans: yes
+
+Ques: can we connect more than one db in one node js?
+ans:  yes we can
+==============================
+Lecture 51:PUT api with MYSQL
+
+app.put('/:Product',(req,resp)=>{
+    //let data = ['Whirpool','Washing Machine','20000','LG']; // with static data 
+    //let data = [req.body.Product,req.body.Item,req.body.Rate,req.body.Product]; // with json data from client
+    let data = [req.body.Product,req.body.Item,req.body.Rate,req.params.Product]; // update by using params
+    mysqlconn.query("Update nodep SET Product=?,Item=?,Rate=? Where Product=?",data,(err,result,fields)=>{
+        if(err){
+            resp.send(err);
+        }
+        else{
+            resp.send(result);
+        }
+    })
+
+});
+
+Lecture 52: DELETE api with MYSQL
+=====================================
+
+app.delete('/:Product',(req,resp)=>{ // deletion using params localhost:5000/'PSPO'
+    mysqlconn.query("DELETE from nodep WHERE Product="+req.params.Product,(err,result)=>{
+        if(err){
+            resp.send(err);
+        }
+        else{
+            resp.send(result);
+        }
+    })
+    
+    });
+
+
